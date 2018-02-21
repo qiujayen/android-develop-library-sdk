@@ -9,7 +9,7 @@ import java.util.LinkedList;
 /**
  * Created by jay on 2017/12/19 上午10:56
  */
-public class CommonApplication extends Application implements Application.ActivityLifecycleCallbacks {
+public abstract class CommonApplication extends Application implements Application.ActivityLifecycleCallbacks {
 
     private LinkedList<Activity> mActivities = new LinkedList<>();
 

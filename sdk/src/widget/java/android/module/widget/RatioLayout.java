@@ -45,14 +45,11 @@ public final class RatioLayout extends FrameLayout {
                     heightMeasureSpec = MeasureSpec.makeMeasureSpec(Math.round(mHeightRatio / mWidthRatio * widthSize), widthMode);
                     break;
                 case HEIGHT:
-
                     if (heightMode != MeasureSpec.EXACTLY) {
                         throw new IllegalStateException("layout_height value is not exactly");
                     }
                     final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
                     widthMeasureSpec = MeasureSpec.makeMeasureSpec(Math.round(mWidthRatio / mHeightRatio * heightSize), heightMode);
-
                     break;
             }
         }
