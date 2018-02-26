@@ -1,6 +1,7 @@
 package android.module.common;
 
 import android.develop.sdk.R;
+import android.module.widget.ExRecyclerView;
 import android.module.widget.RecyclerViewHolder;
 import android.module.widget.StateLayout;
 import android.os.Bundle;
@@ -23,7 +24,7 @@ public abstract class RecyclerViewFragment extends CommonFragment {
 
     private StateLayout mStateLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView mRecyclerView;
+    private ExRecyclerView mRecyclerView;
 
     public View onCustomView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return null;
@@ -42,9 +43,9 @@ public abstract class RecyclerViewFragment extends CommonFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mStateLayout = view.findViewById(R.id.state_layout);
-        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
-        mRecyclerView = view.findViewById(R.id.recycler_view);
+        mStateLayout = (StateLayout) view.findViewById(R.id.state_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        mRecyclerView = (ExRecyclerView) view.findViewById(R.id.recycler_view);
 
         setup();
     }
@@ -53,8 +54,21 @@ public abstract class RecyclerViewFragment extends CommonFragment {
         if (mRecyclerView != null) {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             mRecyclerView.setHasFixedSize(true);
-            mRecyclerView.addOnItemTouchListener(mItemTouchListener);
             mRecyclerView.setAdapter(mAdapter);
+
+            mRecyclerView.setOnItemClickListener(new ExRecyclerView.OnItemClickListener() {
+                @Override
+                public void onItemClick(View v, int position) {
+                    RecyclerViewFragment.this.onItemClick(v, position);
+                }
+            });
+
+            mRecyclerView.setOnItemLongClickListener(new ExRecyclerView.OnItemLongClickListener() {
+                @Override
+                public void onItemLongClick(View v, int position) {
+                    RecyclerViewFragment.this.onItemLongClick(v, position);
+                }
+            });
         }
     }
 
@@ -81,31 +95,6 @@ public abstract class RecyclerViewFragment extends CommonFragment {
     public SwipeRefreshLayout getSwipeRefreshLayout() {
         return mSwipeRefreshLayout;
     }
-
-    private RecyclerView.SimpleOnItemTouchListener mItemTouchListener = new RecyclerView.SimpleOnItemTouchListener() {
-        private GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(MotionEvent ev) {
-                View view = mRecyclerView.findChildViewUnder(ev.getX(), ev.getY());
-                int position = mRecyclerView.getChildAdapterPosition(view);
-                onItemClick(view, position);
-                return true;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent ev) {
-                View view = mRecyclerView.findChildViewUnder(ev.getX(), ev.getY());
-                int position = mRecyclerView.getChildAdapterPosition(view);
-                onItemLongClick(view, position);
-            }
-        });
-
-        @Override
-        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-            return mGestureDetector.onTouchEvent(e);
-        }
-
-    };
 
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return null;
